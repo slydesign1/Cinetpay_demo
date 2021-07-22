@@ -1,7 +1,7 @@
 <?php
 //Credentials apiKey & siteId
-$apikey = '9646945185f9995a0ee4308.51319500';
-$cpm_site_id ='373922';
+$apikey = '';
+$cpm_site_id ='';
 
 //Post Parameters
 $cpm_version = 'V1';

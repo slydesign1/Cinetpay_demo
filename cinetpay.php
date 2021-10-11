@@ -16,11 +16,11 @@ $signatureUrl = "https://api.cinetpay.com/v1/?method=getSignatureByPost";
 $cpm_amount = 100; //TransactionAmount
 $cpm_custom = '';// This field exist soanything can be inserted in it;it will be send back after payment
 
-$cpm_designation = 'testcinetpay'; //this field exist to identify the article being paid
+$cpm_designation = 'Payement'; //this field exist to identify the article being paid
 
 
 $cpm_trans_date = date("Y-m-d H:i:s");
-$cpm_trans_id = 'testcinetpay-' . (string)date("YmdHis"); //Transaction id that will be send to identify the transaction
+$cpm_trans_id = 'payement-' . (string)date("YmdHis"); //Transaction id that will be send to identify the transaction
 $return_url = ""; //The customer will be redirect on this page after successful payment
 $cancel_url = "";//The customer will be redirect on this page if the payment get cancel
 $notify_url = "";//This page must be a webhook (webservice).
@@ -69,7 +69,7 @@ $signature = json_decode($result);
 <!DOCTYPE html>
 <html>
 <head>  
-           <title>sylvain test</title>  
+           <title>slydesign test</title>  
            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />  
            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
@@ -101,5 +101,3 @@ $signature = json_decode($result);
 </body>
 
 </html>
-
-

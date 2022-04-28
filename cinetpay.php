@@ -1,75 +1,80 @@
 <?php
+require_once __DIR__ . '/src/new-guichet.php';
 //Credentials apiKey & siteId
-$apikey = '';
-$cpm_site_id ='';
-
-//Post Parameters
-$cpm_version = 'V1';
-$cpm_language = 'fr';
-$cpm_currency = 'CFA';
-$cpm_page_action = 'PAYMENT';
-$cpm_payment_config = 'SINGLE';
-$cpSecure = "https://secure.cinetpay.com";
-$signatureUrl = "https://api.cinetpay.com/v1/?method=getSignatureByPost";
-/////////////////////////////
-
-$cpm_amount = 100; //TransactionAmount
-$cpm_custom = '';// This field exist soanything can be inserted in it;it will be send back after payment
-
-$cpm_designation = 'Payement'; //this field exist to identify the article being paid
-
-
-$cpm_trans_date = date("Y-m-d H:i:s");
-$cpm_trans_id = 'payement-' . (string)date("YmdHis"); //Transaction id that will be send to identify the transaction
-$return_url = ""; //The customer will be redirect on this page after successful payment
-$cancel_url = "";//The customer will be redirect on this page if the payment get cancel
-$notify_url = "";//This page must be a webhook (webservice).
-//it will be called weither or nor the payment is success or failed
-//you must only listen to this to update transactions status
-
-
-//Data that will be send in the form
-$getSignatureData = array(
-    'apikey' => $apikey,
-    'cpm_amount' => $cpm_amount,
-    'cpm_custom' => $cpm_custom,
-    'cpm_site_id' => $cpm_site_id,
-    'cpm_version' => $cpm_version,
-    'cpm_currency' => $cpm_currency,
-    'cpm_trans_id' => $cpm_trans_id,
-    'cpm_language' => $cpm_language,
-    'cpm_trans_date' => $cpm_trans_date,
-    'cpm_page_action' => $cpm_page_action,
-    'cpm_designation' => $cpm_designation,
-    'cpm_payment_config' => $cpm_payment_config
-);
-// use key 'http' even if you send the request to https://...
-$options = array(
-    'http' => array(
-        'method' => "POST",
-        'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-        'content' => http_build_query($getSignatureData)
-        )
-);
-
-$context = stream_context_create($options);
-$result = file_get_contents($signatureUrl, false, $context);
-if ($result === false) {
-    /* Handle error */
-    \header($return_url);
-    exit();
+try {
+    if(1 !=0)
+    {
+$customer_name ="gg";
+$customer_surname = "lll";
+$description ="dgfegtgrth";
+$amount ="100";
+$currency = "XOF";
 }
-// var_dump($getSignatureData);
-// echo("\n");
-$signature = json_decode($result);
-// var_dump($signature);
+else{
+    echo "Veuillez passer par le formulaire";
+}
+//transaction id
+$id_transaction = date("YmdHis"); // or $id_transaction = Cinetpay::generateTransId()
+
+//Veuillez entrer votre apiKey
+$apikey = "xxxxxxx";
+//Veuillez entrer votre siteId
+$site_id = "xxxxxxx";
+
+//notify url
+$notify_url = "http://mondomaine.com/notify/";
+//return url
+$return_url = "http://mondomaine.com/notify/";
+$channels = "ALL";
+
+
+$formData = array(
+    "transaction_id"=> $id_transaction,
+    "amount"=> $amount,
+    "currency"=> $currency,
+    "customer_surname"=> $customer_name,
+    "customer_name"=> $customer_surname,
+    "description"=> $description,
+    "notify_url" => $notify_url,
+    "return_url" => $return_url,
+    "channels" => $channels,
+    "metadata" => "Joe", // utiliser cette variable pour recevoir des informations personnalisés.
+    "alternative_currency" => "XOF",//Valeur de la transaction dans une devise alternative
+    //pour afficher le paiement par carte de credit
+    "customer_email" => "down@test.com", //l'email du client
+    "customer_phone_number" => "0708876711", //Le numéro de téléphone du client
+    "customer_address" => "BP 0024", //l'adresse du client
+    "customer_city" => "abidjan", // ville du client
+    "customer_country" => "CI",//Le pays du client, la valeur à envoyer est le code ISO du pays (code à deux chiffre) ex : CI, BF, US, CA, FR
+    "customer_state" => "CI", //L’état dans de la quel se trouve le client. Cette valeur est obligatoire si le client se trouve au États Unis d’Amérique (US) ou au Canada (CA)
+    "customer_zip_code" => "225" //Le code postal du client
+);
+// enregistrer la transaction dans votre base de donnée
+/*  $commande->create(); */
+
+$CinetPay = new CinetPay($site_id, $apikey);
+$result = $CinetPay->generatePaymentLink($formData);
+
+if ($result["code"] == '201')
+{
+    $url = $result["data"]["payment_url"];
+
+    // ajouter le token à la transaction enregistré
+    /* $commande->update(); */
+    //redirection vers l'url de paiement
+    header('Location:'.$url);
+
+}
+} catch (Exception $e) {
+echo $e->getMessage();
+}
 
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>  
-           <title>slydesign test</title>  
+           <title>sylvain test</title>  
            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />  
            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
